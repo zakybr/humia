@@ -24,14 +24,15 @@ const frauncesDisplay = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Humia — A church for the city",
+  title: "HUMIA — Indonesian Muslim Society in Auckland",
   description:
-    "Humia is a community church gathering weekly in the heart of the city. Come as you are — find belonging, hope, and a place to grow.",
+    "Himpunan Ummat Muslim Indonesia di Auckland (HUMIA) has connected the Indonesian Muslim community in Auckland since 2005 — through lectures, Quran classes, and community life grounded in the Quran and Sunnah.",
   openGraph: {
-    title: "Humia — A church for the city",
+    title: "HUMIA — Indonesian Muslim Society in Auckland",
     description:
-      "A community church gathering weekly in the heart of the city. Come as you are.",
+      "Connecting the Indonesian Muslim community in Auckland since 2005 — lectures, Quran classes, and community life.",
     type: "website",
+    locale: "en_NZ",
   },
 };
 

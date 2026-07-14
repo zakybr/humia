@@ -1,73 +1,68 @@
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Reveal from "./components/Reveal";
+import ContactForm from "./components/ContactForm";
 import { Section, SectionHeader } from "./components/Section";
 
-const BELIEFS = [
+const FACEBOOK_URL = "https://www.facebook.com/groups/HUMIA/";
+const CONTACT_EMAIL = "humianewzealand@gmail.com";
+const CONTACT_PHONE = "021 948 642";
+
+const VALUES = [
   {
     index: "01",
-    title: "Grace, not performance",
-    body: "You don't have to have it all together. The table is set for the doubting, the searching, and the worn-out alike.",
+    title: "Rooted in Quran & Sunnah",
+    body: "Our lectures, classes, and services follow the Quran and Hadith, in the way of the Prophet Muhammad \u{FDFA}.",
   },
   {
     index: "02",
-    title: "Rooted in Scripture",
-    body: "We teach the Bible plainly and honestly — ancient words that still speak clearly into ordinary, modern life.",
+    title: "Indonesian, and at home in Aotearoa",
+    body: "We hold onto the values we carry from Indonesia while embracing life in New Zealand — two homes, one identity.",
   },
   {
     index: "03",
-    title: "Formed in community",
-    body: "Faith isn't meant to be carried alone. We grow through shared meals, honest conversation, and showing up for one another.",
+    title: "Bonds of ukhuwah",
+    body: "More than an association: a family that looks after one another through study, celebration, and every season of life.",
   },
   {
     index: "04",
-    title: "For the city",
-    body: "We exist beyond our walls — serving our neighbours, our schools, and our streets with tangible, unhurried love.",
+    title: "Led by the community",
+    body: "Our ummah elects its representatives, who appoint a Board of Trustees every two years.",
   },
 ];
 
-const GATHERINGS = [
+const SERVICES = [
   {
-    label: "Sunday Gatherings",
-    time: "9:00 & 11:00 AM",
-    detail: "Teaching, sung worship, and space to breathe. Around 60 minutes.",
+    name: "Pengajian",
+    en: "Islamic Lecture",
+    status: "Biweekly",
+    body: "Regular gatherings for reflection and learning — the heart of HUMIA since our earliest days as “Pengajian Kampung Auckland.”",
   },
   {
-    label: "Kids & Family",
-    time: "Both services",
-    detail: "Safe, joyful spaces for newborns through Grade 5, staffed by trained volunteers.",
+    name: "Kelas Quran",
+    en: "Quran Classes · TPQ",
+    status: "All ages",
+    body: "A madrasah teaching Qaida, Quran, and Islamic studies — for children on Saturdays, teens online twice weekly, and women on Tuesdays, 11am–2pm.",
   },
   {
-    label: "Midweek Groups",
-    time: "Tue – Thu, Evenings",
-    detail: "Smaller circles across the city for conversation, prayer, and friendship.",
+    name: "Penghulu Nikah",
+    en: "Marriage Celebrant",
+    status: "Coming soon",
+    body: "Nikah and marriage celebrant services for couples and families in the community.",
   },
   {
-    label: "Prayer & Quiet",
-    time: "Sun, 8:15 AM",
-    detail: "A quiet room open before each gathering for anyone who wants to pray.",
+    name: "Dompet Dhuafa",
+    en: "Charity & Donation",
+    status: "Coming soon",
+    body: "Channelling sadaqah and support to those in need, both here in Auckland and abroad.",
   },
 ];
 
-const NEXT_STEPS = [
-  {
-    index: "01",
-    title: "Come this Sunday",
-    body: "No sign-up, no dress code, no cost. Arrive a few minutes early and we'll help you find your way.",
-    cta: { label: "Plan your visit", href: "#visit" },
-  },
-  {
-    index: "02",
-    title: "Join a group",
-    body: "The best way to belong. Groups meet across the city throughout the week — there's one near you.",
-    cta: { label: "Find a group", href: "#visit" },
-  },
-  {
-    index: "03",
-    title: "Serve the city",
-    body: "From the welcome desk to the food pantry, there's a place to give your time and gifts.",
-    cta: { label: "Start serving", href: "#visit" },
-  },
+const CONTACT_ROWS = [
+  { k: "Email", v: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
+  { k: "Phone", v: CONTACT_PHONE, href: `tel:+64${CONTACT_PHONE.replace(/\D/g, "").replace(/^0/, "")}` },
+  { k: "Facebook", v: "HUMIA community group", href: FACEBOOK_URL },
+  { k: "Location", v: "Auckland, New Zealand", href: null },
 ];
 
 export default function Home() {
@@ -86,7 +81,6 @@ export default function Home() {
       <main id="main" className="flex-1">
         {/* ---------------------------------------------------------- HERO */}
         <section className="relative overflow-hidden">
-          {/* faint structural grid — decorative */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 opacity-[0.6]"
@@ -101,36 +95,41 @@ export default function Home() {
             }}
           />
           <div className="container-humia relative pb-20 pt-16 md:pb-28 md:pt-24">
-            <Reveal className="flex items-center gap-3">
-              <span className="eyebrow eyebrow-accent">A church for the city</span>
+            <Reveal className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="eyebrow eyebrow-accent">
+                Indonesian Muslim Society &middot; Auckland
+              </span>
               <span aria-hidden="true" className="h-px w-8 bg-line-strong" />
-              <span className="eyebrow">Est. 2011</span>
+              <span className="eyebrow">Est. 2005</span>
             </Reveal>
 
             <Reveal delay={80}>
               <h1 className="mt-8 max-w-4xl text-[2.6rem] leading-[1.04] sm:text-6xl md:text-7xl">
-                Come as you are.
+                Together in faith,
                 <br />
-                <span className="italic text-accent-ink">Find</span> where you
-                belong.
+                <span className="italic text-accent-ink">at home</span> in
+                Auckland.
               </h1>
             </Reveal>
 
             <Reveal delay={160}>
-              <p className="mt-8 max-w-xl text-lg leading-relaxed text-body md:text-xl">
-                Humia is an ordinary community of people learning to follow Jesus
-                together — in doubt and in faith, in the city we call home.
-                Whoever you are, there&rsquo;s a seat here for you.
+              <p className="mt-8 max-w-2xl text-lg leading-relaxed text-body md:text-xl">
+                <span className="text-ink">
+                  Himpunan Ummat Muslim Indonesia di Auckland
+                </span>{" "}
+                &mdash; the Indonesian Muslim Society. Since 2005 we&rsquo;ve
+                gathered to learn, worship, and look after one another, carrying
+                the values of home into the country we now call home.
               </p>
             </Reveal>
 
             <Reveal delay={240}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a
-                  href="#visit"
+                  href="#contact"
                   className="group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink"
                 >
-                  Plan your visit
+                  Join us
                   <span
                     aria-hidden="true"
                     className="transition-transform duration-200 group-hover:translate-x-0.5"
@@ -139,21 +138,20 @@ export default function Home() {
                   </span>
                 </a>
                 <a
-                  href="#gather"
+                  href="#services"
                   className="inline-flex h-12 items-center justify-center gap-2 border border-line-strong px-6 text-sm text-ink transition-colors duration-200 hover:border-ink"
                 >
-                  Watch online
+                  Explore our services
                 </a>
               </div>
             </Reveal>
 
-            {/* service line — spec-sheet detail */}
             <Reveal delay={320}>
               <dl className="mt-16 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-6 border-t border-line pt-8 sm:grid-cols-3">
                 {[
-                  { k: "Sundays", v: "9:00 & 11:00 AM" },
-                  { k: "Location", v: "48 Harbor Lane" },
-                  { k: "Kids", v: "Every service" },
+                  { k: "Established", v: "20 Aug 2005" },
+                  { k: "Based in", v: "Auckland, NZ" },
+                  { k: "Rooted in", v: "Quran & Sunnah" },
                 ].map((item) => (
                   <div key={item.k}>
                     <dt className="eyebrow">{item.k}</dt>
@@ -165,21 +163,51 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ------------------------------------------------------- BELIEVE */}
-        <Section id="believe" surface>
-          <SectionHeader
-            index="A"
-            eyebrow="What we believe"
-            title="A faith that meets you where you are."
-            intro="We hold to the historic Christian faith and try to live it with honesty and warmth. Here's what shapes us."
-          />
+        {/* --------------------------------------------------------- ABOUT */}
+        <Section id="about" surface>
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-5">
+              <SectionHeader
+                index="A"
+                eyebrow="Our story"
+                title="From village lectures to a citywide community."
+              />
+            </div>
+            <div className="lg:col-span-7">
+              <Reveal className="space-y-5 text-lg leading-relaxed text-body">
+                <p>
+                  In the beginning, only a handful of people gathered for
+                  Indonesian Islamic lectures, hosted from home to home. We
+                  called it{" "}
+                  <span className="text-ink">Pengajian Kampung Auckland</span>{" "}
+                  &mdash; the Auckland Village Lecture. On{" "}
+                  <span className="text-ink">20 August 2005</span>, the
+                  Ambassador of Indonesia, Mr. Primo Alui Joelianto, opened our
+                  first inauguration.
+                </p>
+                <p>
+                  As the community grew, the gatherings moved from living rooms
+                  to a community centre in 2006. HUMIA became more than a lecture
+                  &mdash; a place that connects Indonesians across Auckland:
+                  international students, new migrants, and Indonesian New
+                  Zealanders, our tangata whenua.
+                </p>
+                <p>
+                  Today we look after and develop the bonds between companions
+                  through religious activities in the broadest sense &mdash;
+                  blending Islamic values with the cultures of Indonesia and
+                  Aotearoa.
+                </p>
+              </Reveal>
+            </div>
+          </div>
 
-          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
-            {BELIEFS.map((item, i) => (
+          <div className="mt-16 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
+            {VALUES.map((item, i) => (
               <Reveal
                 key={item.index}
                 delay={i * 60}
-                className="group bg-surface p-8 transition-colors duration-200 hover:bg-paper md:p-10"
+                className="bg-surface p-8 transition-colors duration-200 hover:bg-paper md:p-10"
               >
                 <span className="eyebrow eyebrow-accent">{item.index}</span>
                 <h3 className="mt-4 text-2xl">{item.title}</h3>
@@ -189,74 +217,70 @@ export default function Home() {
           </div>
         </Section>
 
-        {/* -------------------------------------------------------- GATHER */}
-        <Section id="gather">
-          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-5">
-              <SectionHeader
-                index="B"
-                eyebrow="When we gather"
-                title="One church, gathering all week."
-                intro="Sunday is the front door, but the week is where life together really happens."
-              />
-              <Reveal delay={160}>
-                <a
-                  href="#visit"
-                  className="link-underline mt-8 inline-flex text-sm text-accent-ink"
-                >
-                  Get directions &amp; times &rarr;
-                </a>
-              </Reveal>
-            </div>
+        {/* ------------------------------------------------------ SERVICES */}
+        <Section id="services">
+          <SectionHeader
+            index="B"
+            eyebrow="What we offer"
+            title="Services grounded in the Quran and Sunnah."
+            intro={
+              "From weekly learning to lifelong milestones, HUMIA serves the community in the way of the Prophet Muhammad \u{FDFA}."
+            }
+          />
 
-            <div className="lg:col-span-7">
-              <ul className="border-t border-line">
-                {GATHERINGS.map((g, i) => (
-                  <Reveal
-                    as="li"
-                    key={g.label}
-                    delay={i * 60}
-                    className="grid grid-cols-1 gap-1 border-b border-line py-6 sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6"
+          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-2">
+            {SERVICES.map((s, i) => (
+              <Reveal
+                key={s.name}
+                delay={i * 60}
+                className="flex flex-col bg-surface p-8 md:p-10"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <span className="eyebrow">{s.en}</span>
+                  <span
+                    className={`shrink-0 border px-2 py-1 font-[family-name:var(--font-geist-mono)] text-[0.625rem] uppercase tracking-[0.14em] ${
+                      s.status === "Coming soon"
+                        ? "border-line-strong text-muted"
+                        : "border-accent-ink/30 text-accent-ink"
+                    }`}
                   >
-                    <div>
-                      <h3 className="text-xl">{g.label}</h3>
-                      <p className="mt-1.5 max-w-md text-body">{g.detail}</p>
-                    </div>
-                    <span className="font-[family-name:var(--font-geist-mono)] text-sm tracking-wide text-accent-ink sm:text-right">
-                      {g.time}
-                    </span>
-                  </Reveal>
-                ))}
-              </ul>
-            </div>
+                    {s.status}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-2xl">{s.name}</h3>
+                <p className="mt-3 leading-relaxed text-body">{s.body}</p>
+              </Reveal>
+            ))}
           </div>
         </Section>
 
-        {/* ----------------------------------------------- RHYTHM / QUOTE */}
+        {/* --------------------------------------------------- MISSION STRIP */}
         <section className="border-t border-line bg-ink text-paper">
           <div className="container-humia py-24 md:py-32">
             <Reveal className="mx-auto max-w-4xl text-center">
-              <span className="eyebrow text-paper/50">Isaiah 40:31</span>
+              <span className="eyebrow text-paper/50">Our purpose</span>
               <blockquote className="mt-8">
                 <p
-                  className="text-3xl leading-[1.25] text-paper sm:text-4xl md:text-5xl"
+                  className="text-[1.75rem] leading-[1.3] text-paper sm:text-4xl md:text-[2.75rem]"
                   style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
                 >
-                  &ldquo;Those who wait upon the Lord will renew their strength;
-                  they will soar on wings like eagles.&rdquo;
+                  &ldquo;The Indonesian community looks after and develops the
+                  bond between companions through religious activities in the
+                  broadest sense.&rdquo;
                 </p>
               </blockquote>
+              <p className="eyebrow mt-8 text-paper/50">HUMIA &middot; Since 2005</p>
             </Reveal>
 
             <div className="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-6 border-t border-paper/15 pt-10 text-center">
               {[
-                { v: "14 yrs", k: "In the city" },
-                { v: "600+", k: "Every Sunday" },
-                { v: "20+", k: "Groups citywide" },
+                { v: "2005", k: "Established" },
+                { v: "Biweekly", k: "Pengajian" },
+                { v: "All ages", k: "Quran classes" },
               ].map((s, i) => (
                 <Reveal key={s.k} delay={i * 80}>
                   <p
-                    className="text-3xl text-paper sm:text-4xl"
+                    className="text-2xl text-paper sm:text-4xl"
                     style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
                   >
                     {s.v}
@@ -270,65 +294,63 @@ export default function Home() {
 
         {/* ----------------------------------------------------- COMMUNITY */}
         <Section id="community" surface>
-          <SectionHeader
-            index="C"
-            eyebrow="Your next step"
-            title="Belonging happens one step at a time."
-            intro="You don't need to figure out everything at once. Pick the step that fits where you are today."
-          />
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+            <div className="lg:col-span-6">
+              <SectionHeader
+                index="C"
+                eyebrow="Community life"
+                title="A community that grows together."
+                intro="Beyond the lectures, HUMIA is a network of friendships, families, and shared celebration across the city."
+              />
+              <Reveal delay={160} className="mt-8 space-y-5 text-lg leading-relaxed text-body">
+                <p>
+                  Our young students showcase what they&rsquo;ve learned at their
+                  annual Quran class performances. New arrivals find familiar
+                  faces and a helping hand. Together we mark the rhythms of the
+                  Islamic year, far from home but never alone.
+                </p>
+              </Reveal>
+            </div>
 
-          <div className="mt-14 grid gap-px overflow-hidden border border-line bg-line md:grid-cols-3">
-            {NEXT_STEPS.map((step, i) => (
-              <Reveal
-                key={step.index}
-                delay={i * 70}
-                className="flex flex-col bg-surface p-8 md:p-10"
-              >
-                <span className="eyebrow eyebrow-accent">{step.index}</span>
-                <h3 className="mt-4 text-2xl">{step.title}</h3>
-                <p className="mt-3 flex-1 leading-relaxed text-body">{step.body}</p>
+            {/* Facebook / news callout */}
+            <div className="lg:col-span-6">
+              <Reveal className="flex h-full flex-col justify-between border border-line bg-surface p-8 md:p-10">
+                <div>
+                  <span className="eyebrow eyebrow-accent">Community news</span>
+                  <h3 className="mt-4 text-2xl">
+                    Stay close to what&rsquo;s happening.
+                  </h3>
+                  <p className="mt-3 leading-relaxed text-body">
+                    Upcoming lectures, events, and announcements are shared with
+                    our members on Facebook. Join the group to keep up with the
+                    community.
+                  </p>
+                </div>
                 <a
-                  href={step.cta.href}
-                  className="link-underline mt-6 inline-flex self-start text-sm text-accent-ink"
+                  href={FACEBOOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-underline mt-8 inline-flex self-start text-sm text-accent-ink"
                 >
-                  {step.cta.label} &rarr;
+                  Visit our Facebook group &rarr;
                 </a>
               </Reveal>
-            ))}
+            </div>
           </div>
         </Section>
 
-        {/* --------------------------------------------------------- VISIT */}
-        <Section id="visit">
+        {/* ------------------------------------------------------- CONTACT */}
+        <Section id="contact">
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
             <div className="lg:col-span-6">
               <SectionHeader
                 index="D"
-                eyebrow="Plan your visit"
-                title="We'd love to meet you this Sunday."
-                intro="Tell us you're coming and we'll have someone ready to welcome you, save you a seat, and help with the kids."
+                eyebrow="Get in touch"
+                title="We&rsquo;d love to hear from you."
+                intro="Whether you&rsquo;re new to Auckland, looking for a class, or want to get involved, send us a message and we&rsquo;ll be in touch."
               />
-              <Reveal delay={160}>
-                <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                  <a
-                    href="mailto:hello@humia.church?subject=Planning%20my%20visit"
-                    className="group inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink"
-                  >
-                    Let us know you&rsquo;re coming
-                    <span
-                      aria-hidden="true"
-                      className="transition-transform duration-200 group-hover:translate-x-0.5"
-                    >
-                      &rarr;
-                    </span>
-                  </a>
-                  <a
-                    href="tel:+15551234567"
-                    className="inline-flex h-12 items-center justify-center border border-line-strong px-6 text-sm text-ink transition-colors duration-200 hover:border-ink"
-                  >
-                    Call us
-                  </a>
-                </div>
+              <Reveal delay={160} className="mt-10">
+                <ContactForm />
               </Reveal>
             </div>
 
@@ -336,22 +358,35 @@ export default function Home() {
             <div className="lg:col-span-6">
               <Reveal className="border border-line bg-surface">
                 <dl className="divide-y divide-line">
-                  {[
-                    { k: "Gathering times", v: "Sundays — 9:00 & 11:00 AM" },
-                    { k: "Address", v: "48 Harbor Lane, Suite 2, City Center" },
-                    { k: "Parking", v: "Free on-site & street parking after 9 AM" },
-                    { k: "Kids", v: "Check-in opens 30 minutes before each service" },
-                    { k: "Contact", v: "hello@humia.church" },
-                  ].map((row) => (
+                  {CONTACT_ROWS.map((row) => (
                     <div
                       key={row.k}
-                      className="grid grid-cols-1 gap-1 p-6 sm:grid-cols-[10rem_1fr] sm:gap-6 md:p-7"
+                      className="grid grid-cols-1 gap-1 p-6 sm:grid-cols-[9rem_1fr] sm:gap-6 md:p-7"
                     >
                       <dt className="eyebrow pt-1">{row.k}</dt>
-                      <dd className="text-base text-ink">{row.v}</dd>
+                      <dd className="text-base text-ink">
+                        {row.href ? (
+                          <a
+                            href={row.href}
+                            target={row.href.startsWith("http") ? "_blank" : undefined}
+                            rel={row.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                            className="link-underline text-accent-ink"
+                          >
+                            {row.v}
+                          </a>
+                        ) : (
+                          row.v
+                        )}
+                      </dd>
                     </div>
                   ))}
                 </dl>
+                <div className="border-t border-line p-6 md:p-7">
+                  <p className="text-sm leading-relaxed text-muted">
+                    Gatherings are held at a community centre in Auckland. Get in
+                    touch and we&rsquo;ll share the current venue and schedule.
+                  </p>
+                </div>
               </Reveal>
             </div>
           </div>

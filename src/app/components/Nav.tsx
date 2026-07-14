@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Wordmark } from "./Brand";
 
 const LINKS = [
-  { href: "#gather", label: "Gather" },
-  { href: "#believe", label: "Believe" },
+  { href: "#about", label: "About" },
+  { href: "#services", label: "Services" },
   { href: "#community", label: "Community" },
-  { href: "#visit", label: "Visit" },
+  { href: "#contact", label: "Contact" },
 ];
 
 export default function Nav() {
@@ -63,10 +63,10 @@ export default function Nav() {
             ))}
           </ul>
           <a
-            href="#visit"
+            href="#contact"
             className="group inline-flex h-9 items-center gap-2 border border-ink bg-ink px-4 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink"
           >
-            Plan your visit
+            Join us
             <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-0.5">
               &rarr;
             </span>
@@ -118,11 +118,11 @@ export default function Nav() {
           ))}
           <li className="pt-4 pb-6">
             <a
-              href="#visit"
+              href="#contact"
               onClick={() => setOpen(false)}
               className="flex h-12 w-full items-center justify-center border border-ink bg-ink text-base text-paper"
             >
-              Plan your visit
+              Join us
             </a>
           </li>
         </ul>

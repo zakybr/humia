@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Humia — design tokens
+   HUMIA — design tokens
    Minimal-light, ink-on-paper. Borrowed discipline from
    Anduril/Palantir: strict grid, hairlines, typographic
-   precision, restrained warm accent.
+   precision, one restrained accent. Accent is a refined deep
+   green — a quiet, dignified nod to the community, used sparingly.
    ============================================================ */
 :root {
   --paper: #f7f6f3; /* base background */
@@ -14,9 +15,9 @@
   --muted: #6b6a63; /* secondary / labels (>= 4.5:1 on paper) */
   --line: #e4e2dc; /* hairline borders */
   --line-strong: #d4d1c8; /* emphasized hairline */
-  --accent: #a86a2c; /* muted amber/ochre — used sparingly */
-  --accent-ink: #8a561f; /* accent text on paper (>= 4.5:1) */
-  --ring: #a86a2c;
+  --accent: #1e7a5e; /* deep green — marks, rules (non-text) */
+  --accent-ink: #12604a; /* accent text on paper (>= 4.5:1) */
+  --ring: #12604a;
 }
 
 @theme inline {
