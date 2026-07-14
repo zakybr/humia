@@ -2,7 +2,13 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import Reveal from "./components/Reveal";
 import ContactForm from "./components/ContactForm";
+import DonateButton from "./components/DonateButton";
 import { Section, SectionHeader } from "./components/Section";
+import { createPublicClient } from "@/lib/supabase/public";
+import type { EventItem, NewsItem } from "@/lib/types";
+
+// Revalidate periodically; admin publish/edit also calls revalidatePath("/").
+export const revalidate = 300;
 
 const FACEBOOK_URL = "https://www.facebook.com/groups/HUMIA/";
 const CONTACT_EMAIL = "humianewzealand@gmail.com";
@@ -53,8 +59,9 @@ const SERVICES = [
   {
     name: "Dompet Dhuafa",
     en: "Charity & Donation",
-    status: "Coming soon",
+    status: "Give now",
     body: "Channelling sadaqah and support to those in need, both here in Auckland and abroad.",
+    cta: "#support",
   },
 ];
 
@@ -65,7 +72,38 @@ const CONTACT_ROWS = [
   { k: "Location", v: "Auckland, New Zealand", href: null },
 ];
 
-export default function Home() {
+async function getContent() {
+  try {
+    const supabase = createPublicClient();
+    const nowIso = new Date().toISOString();
+    const [newsRes, eventsRes] = await Promise.all([
+      supabase
+        .from("news")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+        .limit(4),
+      supabase
+        .from("events")
+        .select("*")
+        .eq("published", true)
+        .gte("starts_at", nowIso)
+        .order("starts_at", { ascending: true })
+        .limit(4),
+    ]);
+    return {
+      news: (newsRes.data as NewsItem[]) ?? [],
+      events: (eventsRes.data as EventItem[]) ?? [],
+    };
+  } catch {
+    // If Supabase is unreachable, fall back to the static narrative.
+    return { news: [] as NewsItem[], events: [] as EventItem[] };
+  }
+}
+
+export default async function Home() {
+  const { news, events } = await getContent();
+
   return (
     <>
       <a
@@ -248,7 +286,15 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="mt-4 text-2xl">{s.name}</h3>
-                <p className="mt-3 leading-relaxed text-body">{s.body}</p>
+                <p className="mt-3 flex-1 leading-relaxed text-body">{s.body}</p>
+                {"cta" in s && s.cta ? (
+                  <a
+                    href={s.cta}
+                    className="link-underline mt-5 inline-flex self-start text-sm text-accent-ink"
+                  >
+                    Donate now &rarr;
+                  </a>
+                ) : null}
               </Reveal>
             ))}
           </div>
@@ -337,7 +383,111 @@ export default function Home() {
               </Reveal>
             </div>
           </div>
+
+          {/* Dynamic news + events (managed in the admin panel) */}
+          {(news.length > 0 || events.length > 0) && (
+            <div className="mt-16 grid gap-px overflow-hidden border border-line bg-line lg:grid-cols-2">
+              <div className="bg-surface p-8 md:p-10">
+                <span className="eyebrow">Latest news</span>
+                {news.length > 0 ? (
+                  <ul className="mt-6 divide-y divide-line">
+                    {news.map((item) => (
+                      <li key={item.id} className="py-5 first:pt-0 last:pb-0">
+                        <span className="font-[family-name:var(--font-geist-mono)] text-xs text-muted">
+                          {new Date(item.created_at).toLocaleDateString("en-NZ", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                        <h4 className="mt-1.5 text-lg text-ink">{item.title}</h4>
+                        {item.body ? (
+                          <p className="mt-1.5 leading-relaxed text-body">{item.body}</p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-6 text-sm text-muted">No news just yet — check back soon.</p>
+                )}
+              </div>
+
+              <div className="bg-surface p-8 md:p-10">
+                <span className="eyebrow">Upcoming events</span>
+                {events.length > 0 ? (
+                  <ul className="mt-6 divide-y divide-line">
+                    {events.map((item) => (
+                      <li key={item.id} className="py-5 first:pt-0 last:pb-0">
+                        <span className="font-[family-name:var(--font-geist-mono)] text-xs text-accent-ink">
+                          {new Date(item.starts_at).toLocaleString("en-NZ", {
+                            weekday: "short",
+                            day: "2-digit",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        <h4 className="mt-1.5 text-lg text-ink">{item.title}</h4>
+                        {item.location ? (
+                          <p className="mt-1 text-sm text-muted">{item.location}</p>
+                        ) : null}
+                        {item.description ? (
+                          <p className="mt-1.5 leading-relaxed text-body">{item.description}</p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-6 text-sm text-muted">
+                    No upcoming events listed — check back soon.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </Section>
+
+        {/* -------------------------------------------------------- SUPPORT */}
+        <section id="support" className="scroll-mt-24 border-t border-line bg-ink text-paper">
+          <div className="container-humia py-20 md:py-28">
+            <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+              <div className="lg:col-span-6">
+                <Reveal className="flex items-center gap-3">
+                  <span className="eyebrow eyebrow-accent">Dompet Dhuafa</span>
+                  <span aria-hidden="true" className="h-px w-6 bg-paper/25" />
+                  <span className="eyebrow text-paper/50">Sadaqah</span>
+                </Reveal>
+                <Reveal delay={60}>
+                  <h2
+                    className="mt-5 text-3xl leading-[1.1] text-paper sm:text-4xl md:text-[2.75rem]"
+                    style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+                  >
+                    Support the community and those in need.
+                  </h2>
+                </Reveal>
+                <Reveal delay={120}>
+                  <p className="mt-5 max-w-md text-lg leading-relaxed text-paper/70">
+                    Your generosity sustains HUMIA&rsquo;s classes, gatherings, and
+                    charitable work — here in Auckland and beyond. Every
+                    contribution is received with gratitude.
+                  </p>
+                </Reveal>
+              </div>
+
+              <div className="lg:col-span-6">
+                <Reveal className="border border-paper/15 bg-paper p-8 text-body md:p-10">
+                  <span className="eyebrow eyebrow-accent">Make a donation</span>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    Choose an amount to give in New Zealand dollars.
+                  </p>
+                  <div className="mt-6">
+                    <DonateButton />
+                  </div>
+                </Reveal>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* ------------------------------------------------------- CONTACT */}
         <Section id="contact">

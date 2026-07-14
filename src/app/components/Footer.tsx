@@ -8,6 +8,7 @@ const NAV = [
   { href: "#about", label: "About" },
   { href: "#services", label: "Services" },
   { href: "#community", label: "Community" },
+  { href: "#support", label: "Support" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -89,9 +90,17 @@ export default function Footer() {
           <p className="font-[family-name:var(--font-geist-mono)] tracking-wide">
             &copy; {new Date().getFullYear()} HUMIA — AUCKLAND, NEW ZEALAND
           </p>
-          <p className="font-[family-name:var(--font-geist-mono)] tracking-wide">
-            HIMPUNAN UMMAT MUSLIM INDONESIA DI AUCKLAND
-          </p>
+          <div className="flex items-center gap-5">
+            <p className="font-[family-name:var(--font-geist-mono)] tracking-wide">
+              HIMPUNAN UMMAT MUSLIM INDONESIA DI AUCKLAND
+            </p>
+            <a
+              href="/admin"
+              className="font-[family-name:var(--font-geist-mono)] tracking-wide text-paper/40 transition-colors hover:text-paper/70"
+            >
+              ADMIN
+            </a>
+          </div>
         </div>
       </div>
     </footer>
