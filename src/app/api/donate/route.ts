@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
             unit_amount: Math.round(amount * 100),
             product_data: {
               name: "Donation to HUMIA",
-              description: "Dompet Dhuafa — supporting the community and those in need.",
+              description: "Supporting the community and those in need.",
             },
           },
         },

@@ -1,35 +1,29 @@
-import type { Metadata } from "next";
+import Link from "next/link";
+import { Navbar } from "@/components/site/navbar";
+import { Footer } from "@/components/site/footer";
 
-export const metadata: Metadata = {
-  title: "Donation cancelled — HUMIA",
-  robots: { index: false, follow: false },
-};
+export const metadata = { title: "Donation cancelled | HUMIA" };
 
-export default function DonateCancelled() {
+export default function DonateCancelledPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-paper px-6 py-16">
-      <div className="max-w-md text-center">
-        <span className="eyebrow">Dompet Dhuafa</span>
-        <h1 className="mt-5 text-4xl">No worries.</h1>
-        <p className="mt-5 text-lg leading-relaxed text-body">
-          Your donation was cancelled and you haven&rsquo;t been charged. You&rsquo;re
-          always welcome to give whenever you&rsquo;re ready.
+    <>
+      <Navbar />
+      <main className="mx-auto flex max-w-xl flex-1 flex-col items-center justify-center px-4 py-24 text-center">
+        <h1 className="text-3xl sm:text-4xl">No problem at all</h1>
+        <p className="mt-4 max-w-md text-lg leading-relaxed">
+          Your donation was cancelled and nothing was charged. You are welcome
+          to try again whenever it suits you.
         </p>
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <a
-            href="/#support"
-            className="inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink"
-          >
+        <div className="mt-8 flex gap-3">
+          <Link href="/donate" className="btn-primary">
             Try again
-          </a>
-          <a
-            href="/"
-            className="inline-flex h-12 items-center justify-center border border-line-strong px-6 text-sm text-ink transition-colors duration-200 hover:border-ink"
-          >
-            Back to home
-          </a>
+          </Link>
+          <Link href="/" className="btn-secondary">
+            Back to the site
+          </Link>
         </div>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }

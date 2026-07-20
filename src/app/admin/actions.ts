@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
-type ActionResult = { error?: string };
+export type ActionResult = { error?: string; ok?: boolean };
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -16,93 +16,62 @@ async function requireAdmin() {
 }
 
 function refresh() {
-  // Public site reads published rows; admin dashboard re-reads all.
   revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/events");
   revalidatePath("/admin");
 }
 
-/* ------------------------------------------------------------------ NEWS */
+function rlsError(error: { message: string }): ActionResult {
+  if (error.message.includes("row-level security")) {
+    return {
+      error:
+        "Permission denied. Run supabase/setup.sql in the Supabase SQL Editor, then sign out and back in.",
+    };
+  }
+  return { error: error.message };
+}
 
-export async function createNews(
-  _prev: ActionResult,
-  formData: FormData,
-): Promise<ActionResult> {
-  const supabase = await requireAdmin();
+/** Shared field parsing for create and update. */
+function eventFields(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
-  const body = String(formData.get("body") ?? "").trim();
-  const published = formData.get("published") === "on";
+  const category = String(formData.get("category") ?? "").trim();
+  const location = String(formData.get("location") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const imageUrl = String(formData.get("image_url") ?? "").trim();
+  const eventDate = String(formData.get("event_date") ?? "").trim();
 
-  if (!title) return { error: "Title is required." };
+  if (!title) return { error: "Please give the event a name." } as const;
+  if (!eventDate) return { error: "Please choose a date and time." } as const;
 
-  const { error } = await supabase.from("news").insert({ title, body, published });
-  if (error) return { error: error.message };
-  refresh();
-  return {};
+  return {
+    row: {
+      title,
+      category: category || null,
+      excerpt: location || null, // location lives in the excerpt column
+      body: description || null,
+      image_url: imageUrl || null,
+      event_date: new Date(eventDate).toISOString(),
+      type: "event" as const,
+    },
+  } as const;
 }
-
-export async function updateNews(
-  _prev: ActionResult,
-  formData: FormData,
-): Promise<ActionResult> {
-  const supabase = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  const title = String(formData.get("title") ?? "").trim();
-  const body = String(formData.get("body") ?? "").trim();
-  const published = formData.get("published") === "on";
-
-  if (!id) return { error: "Missing id." };
-  if (!title) return { error: "Title is required." };
-
-  const { error } = await supabase
-    .from("news")
-    .update({ title, body, published })
-    .eq("id", id);
-  if (error) return { error: error.message };
-  refresh();
-  return {};
-}
-
-export async function deleteNews(formData: FormData): Promise<void> {
-  const supabase = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  if (id) await supabase.from("news").delete().eq("id", id);
-  refresh();
-}
-
-export async function toggleNewsPublished(formData: FormData): Promise<void> {
-  const supabase = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  const next = formData.get("next") === "true";
-  if (id) await supabase.from("news").update({ published: next }).eq("id", id);
-  refresh();
-}
-
-/* ---------------------------------------------------------------- EVENTS */
 
 export async function createEvent(
   _prev: ActionResult,
   formData: FormData,
 ): Promise<ActionResult> {
   const supabase = await requireAdmin();
-  const title = String(formData.get("title") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const location = String(formData.get("location") ?? "").trim();
-  const startsAt = String(formData.get("starts_at") ?? "").trim();
-  const published = formData.get("published") === "on";
+  const parsed = eventFields(formData);
+  if ("error" in parsed) return { error: parsed.error };
 
-  if (!title) return { error: "Title is required." };
-  if (!startsAt) return { error: "Start date/time is required." };
-
-  const { error } = await supabase.from("events").insert({
-    title,
-    description,
-    location: location || null,
-    starts_at: new Date(startsAt).toISOString(),
-    published,
+  const { error } = await supabase.from("news_items").insert({
+    ...parsed.row,
+    published_at: new Date().toISOString().slice(0, 10),
   });
-  if (error) return { error: error.message };
+  if (error) return rlsError(error);
   refresh();
-  return {};
+  return { ok: true };
 }
 
 export async function updateEvent(
@@ -111,47 +80,102 @@ export async function updateEvent(
 ): Promise<ActionResult> {
   const supabase = await requireAdmin();
   const id = String(formData.get("id") ?? "");
-  const title = String(formData.get("title") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const location = String(formData.get("location") ?? "").trim();
-  const startsAt = String(formData.get("starts_at") ?? "").trim();
-  const published = formData.get("published") === "on";
+  if (!id) return { error: "Missing event id." };
 
-  if (!id) return { error: "Missing id." };
-  if (!title) return { error: "Title is required." };
-  if (!startsAt) return { error: "Start date/time is required." };
+  const parsed = eventFields(formData);
+  if ("error" in parsed) return { error: parsed.error };
 
   const { error } = await supabase
-    .from("events")
-    .update({
-      title,
-      description,
-      location: location || null,
-      starts_at: new Date(startsAt).toISOString(),
-      published,
-    })
+    .from("news_items")
+    .update(parsed.row)
     .eq("id", id);
-  if (error) return { error: error.message };
+  if (error) return rlsError(error);
   refresh();
-  return {};
+  return { ok: true };
 }
 
 export async function deleteEvent(formData: FormData): Promise<void> {
   const supabase = await requireAdmin();
   const id = String(formData.get("id") ?? "");
-  if (id) await supabase.from("events").delete().eq("id", id);
+  if (id) await supabase.from("news_items").delete().eq("id", id);
   refresh();
 }
 
-export async function toggleEventPublished(formData: FormData): Promise<void> {
+/** Set (or replace) the photo used in a site slot. */
+export async function updateSiteImage(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
   const supabase = await requireAdmin();
-  const id = String(formData.get("id") ?? "");
-  const next = formData.get("next") === "true";
-  if (id) await supabase.from("events").update({ published: next }).eq("id", id);
+  const key = String(formData.get("key") ?? "").trim();
+  const url = String(formData.get("url") ?? "").trim();
+  if (!key) return { error: "Missing image slot." };
+  if (!url) return { error: "Please choose a photo first." };
+
+  const { error } = await supabase.from("site_images").upsert(
+    { key, url, updated_at: new Date().toISOString() },
+    { onConflict: "key" },
+  );
+  if (error) return rlsError(error);
+  refresh();
+  return { ok: true };
+}
+
+/** Remove a slot's override so it falls back to the bundled default photo. */
+export async function resetSiteImage(formData: FormData): Promise<void> {
+  const supabase = await requireAdmin();
+  const key = String(formData.get("key") ?? "").trim();
+  if (key) await supabase.from("site_images").delete().eq("key", key);
   refresh();
 }
 
-/* ------------------------------------------------------------------ AUTH */
+const ABOUT_SECTION_KEYS = [
+  "about_trustees",
+  "about_representatives",
+  "about_advisory",
+] as const;
+
+/** Save one editable About page section (trustees, reps, or advisory). */
+export async function saveAboutSection(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  const supabase = await requireAdmin();
+  const key = String(formData.get("key") ?? "").trim();
+  const raw = String(formData.get("value") ?? "");
+
+  if (!ABOUT_SECTION_KEYS.includes(key as (typeof ABOUT_SECTION_KEYS)[number])) {
+    return { error: "Unknown section." };
+  }
+
+  let value: unknown;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    return { error: "Could not read the content. Please try again." };
+  }
+  if (!Array.isArray(value)) {
+    return { error: "Content must be a list." };
+  }
+
+  const { error } = await supabase.from("site_content").upsert(
+    { key, value, updated_at: new Date().toISOString() },
+    { onConflict: "key" },
+  );
+  if (error) return rlsError(error);
+  refresh();
+  return { ok: true };
+}
+
+/** Reset one About section back to the bundled default content. */
+export async function resetAboutSection(formData: FormData): Promise<void> {
+  const supabase = await requireAdmin();
+  const key = String(formData.get("key") ?? "").trim();
+  if (ABOUT_SECTION_KEYS.includes(key as (typeof ABOUT_SECTION_KEYS)[number])) {
+    await supabase.from("site_content").delete().eq("key", key);
+  }
+  refresh();
+}
 
 export async function signOut(): Promise<void> {
   const supabase = await createClient();

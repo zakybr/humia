@@ -1,27 +1,28 @@
-import type { Metadata } from "next";
+import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
+import { Navbar } from "@/components/site/navbar";
+import { Footer } from "@/components/site/footer";
 
-export const metadata: Metadata = {
-  title: "Thank you — HUMIA",
-  robots: { index: false, follow: false },
-};
+export const metadata = { title: "Thank you | HUMIA" };
 
-export default function DonateSuccess() {
+export default function DonateSuccessPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-paper px-6 py-16">
-      <div className="max-w-md text-center">
-        <span className="eyebrow eyebrow-accent">Dompet Dhuafa</span>
-        <h1 className="mt-5 text-4xl">Thank you.</h1>
-        <p className="mt-5 text-lg leading-relaxed text-body">
-          Your generosity supports the HUMIA community and those in need. May it
-          be a source of blessing — jazakumullahu khayran.
+    <>
+      <Navbar />
+      <main className="mx-auto flex max-w-xl flex-1 flex-col items-center justify-center px-4 py-24 text-center">
+        <div className="grid h-16 w-16 place-items-center rounded-full bg-sky text-navy">
+          <CheckCircle2 size={30} />
+        </div>
+        <h1 className="mt-6 text-3xl sm:text-4xl">Jazakallahu khairan</h1>
+        <p className="mt-4 max-w-md text-lg leading-relaxed">
+          Your donation was received. Thank you for supporting the community,
+          it genuinely makes a difference.
         </p>
-        <a
-          href="/"
-          className="mt-8 inline-flex h-12 items-center justify-center gap-2 border border-ink bg-ink px-6 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink"
-        >
-          Back to home
-        </a>
-      </div>
-    </main>
+        <Link href="/" className="btn-primary mt-8">
+          Back to the site
+        </Link>
+      </main>
+      <Footer />
+    </>
   );
 }

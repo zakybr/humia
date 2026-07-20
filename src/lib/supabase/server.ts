@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 
 /**
  * Supabase client for Server Components, Server Actions, and Route Handlers.
- * Next.js 16: cookies() is async — must be awaited.
+ * Next.js 16: cookies() is async and must be awaited.
  */
 export async function createClient() {
   const cookieStore = await cookies();

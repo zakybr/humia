@@ -1,8 +1,10 @@
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { EventItem, NewsItem } from "@/lib/types";
-import NewsManager from "./NewsManager";
-import EventsManager from "./EventsManager";
+import type { EventRecord } from "@/lib/types";
+import { getSiteImages, getAboutContent } from "@/lib/data";
+import { DashboardTabs } from "@/components/admin/dashboard-tabs";
 import { signOut } from "./actions";
 
 export default async function AdminDashboard() {
@@ -14,34 +16,45 @@ export default async function AdminDashboard() {
   // Defense-in-depth (proxy.ts already gates this route).
   if (!user) redirect("/admin/login");
 
-  const [{ data: news }, { data: events }] = await Promise.all([
-    supabase.from("news").select("*").order("created_at", { ascending: false }),
-    supabase.from("events").select("*").order("starts_at", { ascending: true }),
+  const { data } = await supabase
+    .from("news_items")
+    .select("*")
+    .eq("type", "event")
+    .order("event_date", { ascending: true });
+
+  const events = (data ?? []) as EventRecord[];
+  const now = new Date().toISOString();
+  const upcoming = events.filter((e) => e.event_date >= now);
+  const past = events.filter((e) => e.event_date < now).reverse();
+
+  const [images, about] = await Promise.all([
+    getSiteImages(),
+    getAboutContent(),
   ]);
 
   return (
-    <div className="min-h-dvh bg-paper">
-      {/* Admin header */}
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-md">
-        <div className="container-humia flex h-16 items-center justify-between">
-          <div className="flex items-baseline gap-3">
-            <span className="text-[1.05rem] font-semibold uppercase tracking-[0.28em] text-ink">
-              Humia
+    <div className="min-h-dvh bg-sky">
+      <header className="sticky top-0 z-40 border-b border-line bg-white">
+        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/humia-logo.png"
+              alt="HUMIA logo"
+              width={120}
+              height={47}
+              className="h-10 w-auto"
+              style={{ width: "auto", height: "auto" }}
+            />
+            <span className="rounded-full bg-sky px-2.5 py-1 text-xs font-semibold text-navy">
+              Admin
             </span>
-            <span className="eyebrow">Admin</span>
           </div>
-          <div className="flex items-center gap-5">
-            <a
-              href="/"
-              className="text-sm text-body transition-colors hover:text-ink"
-            >
-              View site &rarr;
-            </a>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-sm font-medium text-body hover:text-navy">
+              View website
+            </Link>
             <form action={signOut}>
-              <button
-                type="submit"
-                className="inline-flex h-9 items-center border border-line-strong px-4 text-sm text-ink transition-colors hover:border-ink"
-              >
+              <button type="submit" className="btn-secondary !h-10 text-sm">
                 Sign out
               </button>
             </form>
@@ -49,39 +62,20 @@ export default async function AdminDashboard() {
         </div>
       </header>
 
-      <main className="container-humia py-12">
-        <div className="max-w-2xl">
-          <h1 className="text-3xl">Content</h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-muted">
-            Signed in as {user.email}. Published items appear on the public site
-            immediately; drafts stay hidden until you publish them.
-          </p>
-        </div>
+      <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+        <h1 className="text-3xl">Manage the website</h1>
+        <p className="mt-2 max-w-xl leading-relaxed text-soft">
+          Welcome, {user.email}. Anything you save here appears on the public
+          website straight away.
+        </p>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-10">
-          <section aria-labelledby="news-heading">
-            <div className="flex items-center gap-3 border-b border-line pb-4">
-              <span className="eyebrow eyebrow-accent">01</span>
-              <h2 id="news-heading" className="text-xl text-ink">
-                News &amp; updates
-              </h2>
-            </div>
-            <div className="mt-6">
-              <NewsManager items={(news as NewsItem[]) ?? []} />
-            </div>
-          </section>
-
-          <section aria-labelledby="events-heading">
-            <div className="flex items-center gap-3 border-b border-line pb-4">
-              <span className="eyebrow eyebrow-accent">02</span>
-              <h2 id="events-heading" className="text-xl text-ink">
-                Events
-              </h2>
-            </div>
-            <div className="mt-6">
-              <EventsManager items={(events as EventItem[]) ?? []} />
-            </div>
-          </section>
+        <div className="mt-8">
+          <DashboardTabs
+            upcoming={upcoming}
+            past={past}
+            images={images}
+            about={about}
+          />
         </div>
       </main>
     </div>

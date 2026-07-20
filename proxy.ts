@@ -2,10 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Next.js 16 renames the `middleware` convention to `proxy`.
- * Runs before rendering: refreshes the Supabase auth session (keeps cookies
- * fresh) and gates the /admin area. Unauthenticated visitors are redirected
- * to /admin/login, and already-authenticated ones skip the login page.
+ * Next.js 16 proxy (formerly middleware).
+ * Only runs on /admin routes so public pages are not blocked by auth checks.
  */
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -31,16 +29,14 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // IMPORTANT: getUser() revalidates the token and refreshes cookies.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isAdminArea = path === "/admin" || path.startsWith("/admin/");
   const isLoginPage = path === "/admin/login";
 
-  if (isAdminArea && !isLoginPage && !user) {
+  if (!isLoginPage && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("redirect", path);
@@ -58,8 +54,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Run on all routes except static assets and image files.
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)",
-  ],
+  matcher: ["/admin", "/admin/:path*"],
 };

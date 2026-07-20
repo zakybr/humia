@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState, type FormEvent } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -23,29 +24,36 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError(error.message);
+      setError("That email or password is not right. Please try again.");
       setLoading(false);
       return;
     }
-    // Full navigation so proxy.ts + server components see the fresh session.
+    // Full navigation so proxy.ts and server components see the fresh session.
     router.replace(redirectTo);
     router.refresh();
   }
 
   const fieldClass =
-    "mt-2 w-full border border-line bg-surface px-3.5 py-2.5 text-[15px] text-ink transition-colors focus:border-accent-ink";
+    "mt-2 h-12 w-full rounded-xl border border-line bg-white px-4 text-base text-ink outline-none focus:border-blue";
 
   return (
-    <div className="w-full max-w-sm">
-      <span className="eyebrow eyebrow-accent">HUMIA Admin</span>
-      <h1 className="mt-4 text-3xl">Sign in</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted">
-        Manage news and events for the HUMIA website.
+    <div className="w-full max-w-sm rounded-2xl border border-line bg-white p-8">
+      <Image
+        src="/humia-logo.png"
+        alt="HUMIA logo"
+        width={140}
+        height={55}
+        className="h-11 w-auto"
+        style={{ width: "auto", height: "auto" }}
+      />
+      <h1 className="mt-5 text-2xl">Committee sign in</h1>
+      <p className="mt-2 text-[15px] leading-relaxed text-soft">
+        Sign in to add or update events on the website.
       </p>
 
-      <form onSubmit={onSubmit} noValidate className="mt-8 space-y-5">
+      <form onSubmit={onSubmit} noValidate className="mt-7 space-y-5">
         <div>
-          <label htmlFor="email" className="eyebrow block">
+          <label htmlFor="email" className="block text-sm font-semibold text-ink">
             Email
           </label>
           <input
@@ -60,7 +68,7 @@ function LoginForm() {
           />
         </div>
         <div>
-          <label htmlFor="password" className="eyebrow block">
+          <label htmlFor="password" className="block text-sm font-semibold text-ink">
             Password
           </label>
           <input
@@ -75,7 +83,7 @@ function LoginForm() {
         </div>
 
         {error ? (
-          <p role="alert" className="text-sm text-[#b3261e]">
+          <p role="alert" className="text-sm font-medium text-red-700">
             {error}
           </p>
         ) : null}
@@ -83,17 +91,14 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex h-11 w-full items-center justify-center border border-ink bg-ink px-6 text-sm text-paper transition-colors duration-200 hover:bg-transparent hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
+          className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {loading ? "Signing in..." : "Sign in"}
         </button>
       </form>
 
-      <a
-        href="/"
-        className="link-underline mt-8 inline-flex text-sm text-muted hover:text-ink"
-      >
-        &larr; Back to site
+      <a href="/" className="mt-6 inline-block text-sm text-soft hover:text-navy">
+        Back to the website
       </a>
     </div>
   );
@@ -101,7 +106,7 @@ function LoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-paper px-6 py-16">
+    <main className="flex min-h-dvh items-center justify-center bg-sky px-4 py-16">
       <Suspense fallback={<div className="w-full max-w-sm" />}>
         <LoginForm />
       </Suspense>

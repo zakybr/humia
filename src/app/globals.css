@@ -1,39 +1,36 @@
 @import "tailwindcss";
 
 /* ============================================================
-   HUMIA — design tokens
-   Minimal-light, ink-on-paper. Borrowed discipline from
-   Anduril/Palantir: strict grid, hairlines, typographic
-   precision, one restrained accent. Accent is a refined deep
-   green — a quiet, dignified nod to the community, used sparingly.
+   HUMIA design tokens
+   Two colours carry the whole site: the deep navy from the
+   HUMIA Trust banner, and white. Everything else is a tint or
+   shade of those two. Type is Inter with Helvetica Neue fallback.
    ============================================================ */
 :root {
-  --paper: #f7f6f3; /* base background */
-  --surface: #ffffff; /* elevated sections / cards */
-  --ink: #0a0a0a; /* headings, high-contrast text */
-  --body: #33322e; /* body copy (>= 4.5:1 on paper) */
-  --muted: #6b6a63; /* secondary / labels (>= 4.5:1 on paper) */
-  --line: #e4e2dc; /* hairline borders */
-  --line-strong: #d4d1c8; /* emphasized hairline */
-  --accent: #1e7a5e; /* deep green — marks, rules (non-text) */
-  --accent-ink: #12604a; /* accent text on paper (>= 4.5:1) */
-  --ring: #12604a;
+  --paper: #ffffff;
+  --sky: #f2f6fb; /* tinted section background */
+  --navy: #0b2c54; /* primary */
+  --navy-deep: #071e3b; /* footer, dark sections */
+  --blue: #1f6fb2; /* accent, from the logo */
+  --ink: #101f33; /* headings */
+  --body: #3b4c62; /* body copy */
+  --soft: #5f7188; /* secondary text */
+  --line: #dce4ee; /* hairline borders */
 }
 
 @theme inline {
   --color-paper: var(--paper);
-  --color-surface: var(--surface);
+  --color-sky: var(--sky);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-blue: var(--blue);
   --color-ink: var(--ink);
   --color-body: var(--body);
-  --color-muted: var(--muted);
+  --color-soft: var(--soft);
   --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-serif-display);
+  --font-sans: var(--font-inter), "Helvetica Neue", Helvetica, Arial,
+    ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -41,10 +38,16 @@
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     background: var(--paper);
     color: var(--body);
-    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -54,101 +57,74 @@
   h3,
   h4 {
     color: var(--ink);
-    font-family: var(--font-serif), Georgia, "Times New Roman", serif;
-    font-weight: 400;
+    font-weight: 600;
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
 
-  /* Visible, on-brand focus ring for keyboard users */
   :focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 3px;
-    border-radius: 1px;
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
   :focus:not(:focus-visible) {
     outline: none;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--accent) 24%, transparent);
+    background: color-mix(in srgb, var(--blue) 22%, transparent);
     color: var(--ink);
   }
 }
 
 @layer components {
-  /* Mono technical eyebrow — the key "spec-sheet" borrow */
+  /* Small uppercase label above headings */
   .eyebrow {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
-    line-height: 1;
-    letter-spacing: 0.22em;
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--blue);
   }
 
-  .eyebrow-accent {
-    color: var(--accent-ink);
+  /* Primary button: solid navy */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 9999px;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: var(--blue);
   }
 
-  /* Section shell + container rhythm */
-  .container-humia {
-    width: 100%;
-    max-width: 72rem;
-    margin-inline: auto;
-    padding-inline: 1.5rem;
+  /* Secondary button: outlined */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 9999px;
+    border: 1.5px solid var(--line);
+    background: #fff;
+    color: var(--navy);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    transition: border-color 0.2s ease, color 0.2s ease;
   }
-  @media (min-width: 768px) {
-    .container-humia {
-      padding-inline: 2.5rem;
-    }
-  }
-
-  .link-underline {
-    background-image: linear-gradient(var(--accent-ink), var(--accent-ink));
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 1px;
-    transition: background-size 200ms ease;
-  }
-  .link-underline:hover {
-    background-size: 100% 1px;
-  }
-}
-
-/* ============================================================
-   Scroll reveal — subtle fade + rise. Disabled under
-   prefers-reduced-motion.
-   ============================================================ */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(16px);
-  transition:
-    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  [data-reveal],
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+  .btn-secondary:hover {
+    border-color: var(--blue);
+    color: var(--blue);
   }
 }
