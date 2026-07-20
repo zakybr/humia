@@ -17,20 +17,19 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(url, key, {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            for (const { name, value, options } of cookiesToSet) {
-              cookieStore.set(name, value, options);
-            }
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // Safe to ignore when the session is refreshed by proxy.ts.
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          for (const { name, value, options } of cookiesToSet) {
+            cookieStore.set(name, value, options);
           }
-        },
+        } catch {
+          // The `setAll` method was called from a Server Component.
+          // Safe to ignore when the session is refreshed by proxy.ts.
+        }
       },
     },
   });
