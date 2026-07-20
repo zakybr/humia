@@ -11,6 +11,8 @@ import {
 /** Events with a start date from today onwards, soonest first. */
 export async function getUpcomingEvents(limit?: number): Promise<EventRecord[]> {
   const supabase = createPublicClient();
+  if (!supabase) return [];
+
   let query = supabase
     .from("news_items")
     .select("*")
@@ -30,6 +32,8 @@ export async function getUpcomingEvents(limit?: number): Promise<EventRecord[]> 
 /** Events that have already happened, most recent first. */
 export async function getPastEvents(limit?: number): Promise<EventRecord[]> {
   const supabase = createPublicClient();
+  if (!supabase) return [];
+
   let query = supabase
     .from("news_items")
     .select("*")
@@ -53,6 +57,8 @@ export async function getPastEvents(limit?: number): Promise<EventRecord[]> {
  */
 export async function getSiteImages(): Promise<SiteImages> {
   const supabase = createPublicClient();
+  if (!supabase) return resolveSiteImages();
+
   const { data, error } = await supabase.from("site_images").select("key,url");
   if (error) {
     // Table may not exist yet, or reads are blocked: use bundled defaults.
@@ -73,6 +79,8 @@ export async function getSiteImages(): Promise<SiteImages> {
  */
 export async function getAboutContent(): Promise<AboutContent> {
   const supabase = createPublicClient();
+  if (!supabase) return resolveAboutContent();
+
   const { data, error } = await supabase
     .from("site_content")
     .select("key,value");
