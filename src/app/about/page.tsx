@@ -33,13 +33,11 @@ export default async function AboutPage() {
         <section className="bg-navy-deep text-white">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
             <Reveal>
-              <p className="text-sm font-semibold uppercase tracking-wider text-white/60">
+              <h1 className="max-w-2xl text-4xl leading-tight sm:text-5xl lg:text-6xl">
                 Cerita Kami
-              </p>
-              <h1 className="mt-3 max-w-2xl text-4xl leading-tight sm:text-5xl">
-                Our story
               </h1>
-              <p className="mt-1 text-lg text-white/70">Ā tātou kōrero</p>
+              <p className="mt-3 text-xl text-white/80 sm:text-2xl">Our story</p>
+              <p className="mt-1 text-lg text-white/60">Ā tātou kōrero</p>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
                 From living-room lectures to a registered trust serving
                 generations of Indonesian Muslims in Tamaki Makaurau.
